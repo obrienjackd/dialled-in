@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Dialled In"/>
+  <meta name="theme-color" content="#0e0c0a"/>
+  <title>Dialled In — Expert Brew Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0e0c0a;--surface:#181410;--surface2:#221e18;--border:#2e2820;--border2:#3d3528;
+      --cream:#f0e6d3;--cream2:#c8b89a;--amber:#c8861a;--amber2:#e8a030;
+      --text:#f0e6d3;--text2:#a89880;--text3:#6a5c4a;
+      --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+    }
+    html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;font-size:15px;-webkit-text-size-adjust:100%}
+    h1,h2,h3{font-family:var(--font-display)}
+    .app{max-width:480px;margin:0 auto;padding:0 0 100px}
+
+    .header{padding:env(safe-area-inset-top, 28px) 20px 0;padding-top:max(env(safe-area-inset-top),28px);display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo-mark{width:32px;height:32px;border:1.5px solid var(--amber);border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .logo-inner{width:8px;height:8px;background:var(--amber);border-radius:50%}
+    .logo-text{font-family:var(--font-display);font-size:18px;color:var(--cream)}
+
+    .nav-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:20px 20px 0}
+    .tab{flex:1;padding:10px 4px;text-align:center;font-size:12px;font-family:var(--font-body);font-weight:400;letter-spacing:0.04em;cursor:pointer;border:none;background:transparent;color:var(--text3);transition:all 0.2s;text-transform:uppercase}
+    .tab.active{background:var(--surface2);color:var(--cream);border-bottom:1.5px solid var(--amber)}
+
+    .section{padding:0 20px;margin-top:24px}
+    .section-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);font-family:var(--font-mono);margin-bottom:12px}
+
+    .method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .method-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 4px;text-align:center;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+    .method-btn.active{border-color:var(--amber);background:var(--surface2)}
+    .method-icon{font-size:20px;line-height:1}
+    .method-name{font-size:10px;color:var(--text2);letter-spacing:0.04em;font-family:var(--font-mono)}
+
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;letter-spacing:0.06em;font-family:var(--font-mono);text-transform:uppercase}
+    .field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--cream);font-family:var(--font-body);font-size:16px;outline:none;transition:border-color 0.2s;appearance:none;-webkit-appearance:none}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--amber2)}
+    .field input::placeholder,.field textarea::placeholder{color:var(--text3)}
+    .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236a5c4a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+    .field select option{background:#181410}
+    .field textarea{min-height:64px;resize:vertical;line-height:1.5}
+    .optional-tag{color:var(--text3);font-size:9px;margin-left:6px}
+    .required-tag{color:var(--amber);font-size:9px;margin-left:4px}
+
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+    .brew-btn{width:calc(100% - 40px);margin:24px 20px 0;padding:16px;background:var(--amber);border:none;border-radius:8px;color:#0e0c0a;font-family:var(--font-display);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent}
+    .brew-btn:active{background:var(--amber2);transform:scale(0.98)}
+    .brew-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+    .result-card{margin:20px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;overflow:hidden}
+    .result-header{padding:20px;border-bottom:1px solid var(--border);background:var(--surface2)}
+    .result-method{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);font-family:var(--font-mono);margin-bottom:4px}
+    .result-title{font-family:var(--font-display);font-size:22px;color:var(--cream)}
+    .result-roaster{font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-top:4px}
+
+    .recipe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
+    .recipe-stat{background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:4px}
+    .recipe-stat:last-child:nth-child(odd){grid-column:1/-1}
+    .stat-val{font-family:var(--font-display);font-size:22px;color:var(--cream)}
+    .stat-unit{font-size:11px;color:var(--text3);font-family:var(--font-mono)}
+    .stat-label{font-size:10px;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase;font-family:var(--font-mono);margin-top:2px}
+
+    .result-body{padding:20px}
+    .result-section{margin-bottom:20px}
+    .result-section-title{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);font-family:var(--font-mono);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+    .result-text{font-size:14px;color:var(--text2);line-height:1.75}
+
+    .tasting-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .tasting-pill{padding:4px 12px;border:1px solid var(--border2);border-radius:20px;font-size:12px;color:var(--cream2);font-family:var(--font-mono)}
+
+    .save-row{display:flex;gap:8px;margin:0 20px 16px}
+    .save-btn{flex:1;padding:12px;border:1px solid var(--border2);border-radius:6px;background:transparent;color:var(--text2);font-family:var(--font-body);font-size:13px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;-webkit-tap-highlight-color:transparent}
+    .save-btn:active{border-color:var(--amber);color:var(--cream)}
+    .save-btn.fav{color:var(--amber);border-color:var(--amber)}
+
+    .notes-area{margin:0 20px 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    .notes-area textarea{width:100%;background:transparent;border:none;padding:12px;color:var(--cream);font-family:var(--font-body);font-size:15px;resize:vertical;min-height:64px;outline:none}
+    .notes-area textarea::placeholder{color:var(--text3)}
+    .notes-submit{width:100%;padding:10px;background:var(--surface2);border:none;border-top:1px solid var(--border);color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font-body)}
+    .notes-submit:active{color:var(--cream)}
+
+    .loading-state{padding:40px 20px;text-align:center}
+    .loading-cup{font-size:36px;animation:steam 1.5s ease-in-out infinite}
+    @keyframes steam{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .loading-text{margin-top:12px;font-size:13px;color:var(--text2);font-family:var(--font-mono)}
+
+    .history-list{padding:0 20px}
+    .history-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent}
+    .history-item:active{border-color:var(--border2)}
+    .history-item.fav-item{border-left:2px solid var(--amber)}
+    .history-meta{font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-top:3px}
+    .history-name{font-size:14px;color:var(--cream)}
+    .history-badge{font-size:10px;padding:3px 8px;border:1px solid var(--border2);border-radius:10px;color:var(--text2);font-family:var(--font-mono);white-space:nowrap;margin-left:8px;flex-shrink:0}
+    .empty-state{text-align:center;padding:48px 20px;color:var(--text3);font-family:var(--font-mono);font-size:12px}
+    .error-msg{margin:16px 20px 0;padding:12px;background:#2a1a10;border:1px solid #5a2a10;border-radius:6px;color:#e8a060;font-size:13px;font-family:var(--font-mono)}
+
+    .brew-step{padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2);line-height:1.6;display:flex;gap:10px}
+    .brew-step:last-child{border-bottom:none}
+    .step-num{color:var(--amber);font-family:var(--font-mono);font-size:10px;padding-top:3px;flex-shrink:0;min-width:20px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-mark"><div class="logo-inner"></div></div>
+      <span class="logo-text">Dialled In</span>
+    </div>
+    <span style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">expert brew guide</span>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showTab('brew')">Brew</button>
+    <button class="tab" onclick="showTab('history')">History</button>
+    <button class="tab" onclick="showTab('favourites')">Favourites</button>
+  </div>
+
+  <!-- BREW TAB -->
+  <div id="tab-brew">
+    <div class="section">
+      <div class="section-label">Brew Method</div>
+      <div class="method-grid">
+        <button class="method-btn active" onclick="setMethod('espresso',this)">
+          <span class="method-icon">☕</span>
+          <span class="method-name">Espresso</span>
+        </button>
+        <button class="method-btn" onclick="setMethod('v60',this)">
+          <span class="method-icon">🫙</span>
+          <span class="method-name">V60</span>
+        </button>
+        <button class="method-btn" onclick="setMethod('moccamaster',this)">
+          <span class="method-icon">🔌</span>
+          <span class="method-name">Moccamaster</span>
+        </button>
+        <button class="method-btn" onclick="setMethod('aeropress',this)">
+          <span class="method-icon">💉</span>
+          <span class="method-name">Aeropress</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:20px">
+      <div class="section-label">Bean Details</div>
+
+      <div class="field">
+        <label>Bean weight (g) <span class="required-tag">required</span></label>
+        <input type="number" id="beanWeight" placeholder="e.g. 18" min="1" max="500" inputmode="decimal"/>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Roaster <span class="optional-tag">optional</span></label>
+          <input type="text" id="roaster" placeholder="e.g. Sample Coffee"/>
+        </div>
+        <div class="field">
+          <label>Origin <span class="optional-tag">optional</span></label>
+          <input type="text" id="origin" placeholder="e.g. Ethiopia"/>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Processing <span class="optional-tag">optional</span></label>
+          <select id="processing">
+            <option value="">Select...</option>
+            <option>Washed</option>
+            <option>Natural</option>
+            <option>Honey</option>
+            <option>Anaerobic</option>
+            <option>Wet-hulled</option>
+            <option>Carbonic Maceration</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Roast Level <span class="optional-tag">optional</span></label>
+          <select id="roast">
+            <option value="">Select...</option>
+            <option>Light</option>
+            <option>Light-Medium</option>
+            <option>Medium</option>
+            <option>Medium-Dark</option>
+            <option>Dark</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Altitude (masl) <span class="optional-tag">optional</span></label>
+          <input type="number" id="altitude" placeholder="e.g. 1900" inputmode="decimal"/>
+        </div>
+        <div class="field">
+          <label>Roast Date <span class="optional-tag">optional</span></label>
+          <input type="date" id="roastDate"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Farmer / Producer <span class="optional-tag">optional</span></label>
+        <input type="text" id="farmer" placeholder="e.g. Worka Sakaro Cooperative"/>
+      </div>
+
+      <div class="field">
+        <label>Bean Variety <span class="optional-tag">optional</span></label>
+        <input type="text" id="beanType" placeholder="e.g. Heirloom, Bourbon, SL28"/>
+      </div>
+
+      <div class="field">
+        <label>Expected / Listed Flavours <span class="optional-tag">optional</span></label>
+        <input type="text" id="flavours" placeholder="e.g. blueberry, jasmine, dark chocolate"/>
+      </div>
+
+      <div class="field">
+        <label>Notes for the AI <span class="optional-tag">optional</span></label>
+        <textarea id="userNotes" placeholder="e.g. I want to emphasise the fruit. Previous brew was too sour."></textarea>
+      </div>
+    </div>
+
+    <button class="brew-btn" id="brewBtn" onclick="generateRecipe()">⟳ Generate Recipe</button>
+    <div id="error-container"></div>
+    <div id="result-container"></div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div id="tab-history" style="display:none">
+    <div class="section"><div class="section-label">Previous Brews</div></div>
+    <div class="history-list" id="history-list"><div class="empty-state">No brews yet. Dial one in.</div></div>
+  </div>
+
+  <!-- FAVOURITES TAB -->
+  <div id="tab-favourites" style="display:none">
+    <div class="section"><div class="section-label">Favourite Beans</div></div>
+    <div class="history-list" id="fav-list"><div class="empty-state">No favourites saved yet.</div></div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'dialled_in_brews_v1';
+  let currentMethod = 'espresso';
+  let brewHistory = loadHistory();
+  let lastResult = null;
+
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
+  }
+  function saveHistory() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(brewHistory)); } catch(e) {}
+  }
+
+  function showTab(tab) {
+    ['brew','history','favourites'].forEach(t => {
+      document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['brew','history','favourites'][i]===tab));
+    if(tab==='history') renderHistory();
+    if(tab==='favourites') renderFavourites();
+  }
+
+  function setMethod(method, btn) {
+    currentMethod = method;
+    document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function getMethodLabel() {
+    return {espresso:'Espresso',v60:'V60 Pour-Over',moccamaster:'Moccamaster',aeropress:'Aeropress'}[currentMethod] || currentMethod;
+  }
+
+  async function generateRecipe() {
+    const weight = document.getElementById('beanWeight').value;
+    if (!weight) { showError('Bean weight is required to generate a recipe.'); return; }
+    clearError();
+
+    const inputs = {
+      method: getMethodLabel(),
+      beanWeight: weight,
+      roaster: document.getElementById('roaster').value,
+      origin: document.getElementById('origin').value,
+      processing: document.getElementById('processing').value,
+      roast: document.getElementById('roast').value,
+      altitude: document.getElementById('altitude').value,
+      farmer: document.getElementById('farmer').value,
+      beanType: document.getElementById('beanType').value,
+      flavours: document.getElementById('flavours').value,
+      roastDate: document.getElementById('roastDate').value,
+      userNotes: document.getElementById('userNotes').value
+    };
+
+    const daysOff = inputs.roastDate ? Math.floor((new Date() - new Date(inputs.roastDate)) / (1000*60*60*24)) : null;
+
+    const btn = document.getElementById('brewBtn');
+    btn.disabled = true; btn.textContent = 'Brewing...';
+    document.getElementById('result-container').innerHTML = `<div class="loading-state"><div class="loading-cup">☕</div><div class="loading-text">Consulting the experts...</div></div>`;
+
+    const prompt = `You are an expert specialty coffee barista and coach. Think like James Hoffmann (precise, scientific, accessible), Scott Rao (data-driven, ratio-focused), Lance Hedrick (practical dialling-in, real-world), and Sprometheus (analytical, gear-aware).
+
+Generate a detailed, expert brew recipe for:
+- Method: ${inputs.method}
+- Dose (whole bean weight): ${inputs.beanWeight}g
+${inputs.roaster ? '- Roaster: '+inputs.roaster : ''}
+${inputs.origin ? '- Origin: '+inputs.origin : ''}
+${inputs.processing ? '- Processing: '+inputs.processing : ''}
+${inputs.roast ? '- Roast level: '+inputs.roast : ''}
+${inputs.altitude ? '- Altitude: '+inputs.altitude+' masl' : ''}
+${inputs.farmer ? '- Producer/Farmer: '+inputs.farmer : ''}
+${inputs.beanType ? '- Variety: '+inputs.beanType : ''}
+${inputs.flavours ? '- Listed flavours: '+inputs.flavours : ''}
+${daysOff !== null ? '- Days off roast: '+daysOff : ''}
+${inputs.userNotes ? '- User notes: '+inputs.userNotes : ''}
+
+If a well-known roaster is specified, factor in their known roast style and philosophy where relevant.
+
+Respond ONLY in this exact JSON format with no preamble, no markdown, no code fences:
+{
+  "recipeName": "short evocative name for this brew",
+  "grindSize": "specific grind guidance with reference (e.g. Comandante 20 clicks / fine / similar to table salt)",
+  "waterTemp": "temperature in celsius as a number only e.g. 93",
+  "totalWater": "total water in ml as a number only e.g. 250",
+  "expectedOutput": "expected yield in grams as a number only e.g. 36",
+  "brewRatio": "ratio e.g. 1:2.5",
+  "totalTime": "total brew time e.g. 2:30",
+  "steps": ["step 1 with timing", "step 2", "step 3 — be specific and sequential, 4-7 steps"],
+  "restDays": "ideal days off roast and why, 1-2 sentences",
+  "dialInTips": "2-3 sentences of expert dialling-in advice specific to this bean profile",
+  "tastingNotes": ["note1", "note2", "note3", "note4"],
+  "expertInsight": "1-2 sentences of deeper insight this bean, roaster, or process deserves",
+  "troubleshoot": "the 2 most likely issues if this brew goes wrong and how to fix them"
+}`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await resp.json();
+      const raw = data.content.map(i => i.text || '').join('').trim();
+      const recipe = JSON.parse(raw.replace(/```json|```/g, '').trim());
+      recipe._inputs = inputs;
+      recipe._timestamp = new Date().toISOString();
+      recipe._method = getMethodLabel();
+      recipe._isFav = false;
+      recipe._notes = '';
+      lastResult = recipe;
+      renderResult(recipe);
+    } catch(e) {
+      document.getElementById('result-container').innerHTML = '';
+      showError('Could not generate recipe. Check your connection and try again.');
+      console.error(e);
+    }
+    btn.disabled = false; btn.textContent = '⟳ Generate Recipe';
+  }
+
+  function renderResult(recipe) {
+    const rc = document.getElementById('result-container');
+    const steps = (recipe.steps || []).map((s,i) =>
+      `<div class="brew-step"><span class="step-num">${String(i+1).padStart(2,'0')}</span><span>${s}</span></div>`
+    ).join('');
+    const pills = (recipe.tastingNotes || []).map(n => `<span class="tasting-pill">${n}</span>`).join('');
+    const roasterLine = recipe._inputs?.roaster ? `<div class="result-roaster">${recipe._inputs.roaster}</div>` : '';
+
+    rc.innerHTML = `
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-method">${recipe._method}</div>
+          <div class="result-title">${recipe.recipeName || 'Your Recipe'}</div>
+          ${roasterLine}
+        </div>
+        <div class="recipe-grid">
+          <div class="recipe-stat"><div class="stat-val">${recipe.grindSize || '—'}</div><div class="stat-label">Grind</div></div>
+          <div class="recipe-stat"><div class="stat-val">${recipe.waterTemp || '—'}</div><div class="stat-unit">°C</div><div class="stat-label">Water Temp</div></div>
+          <div class="recipe-stat"><div class="stat-val">${recipe.totalWater || '—'}</div><div class="stat-unit">ml</div><div class="stat-label">Total Water</div></div>
+          <div class="recipe-stat"><div class="stat-val">${recipe.expectedOutput || '—'}</div><div class="stat-unit">g</div><div class="stat-label">Expected Yield</div></div>
+          <div class="recipe-stat"><div class="stat-val">${recipe.brewRatio || '—'}</div><div class="stat-label">Ratio</div></div>
+          <div class="recipe-stat"><div class="stat-val">${recipe.totalTime || '—'}</div><div class="stat-label">Total Time</div></div>
+        </div>
+        <div class="result-body">
+          <div class="result-section"><div class="result-section-title">Brew Steps</div>${steps}</div>
+          ${recipe.tastingNotes?.length ? `<div class="result-section"><div class="result-section-title">Tasting Notes</div><div class="tasting-pills">${pills}</div></div>` : ''}
+          ${recipe.restDays ? `<div class="result-section"><div class="result-section-title">Rest Days</div><div class="result-text">${recipe.restDays}</div></div>` : ''}
+          ${recipe.dialInTips ? `<div class="result-section"><div class="result-section-title">Dialling In</div><div class="result-text">${recipe.dialInTips}</div></div>` : ''}
+          ${recipe.expertInsight ? `<div class="result-section"><div class="result-section-title">Expert Insight</div><div class="result-text" style="color:var(--cream2)">${recipe.expertInsight}</div></div>` : ''}
+          ${recipe.troubleshoot ? `<div class="result-section"><div class="result-section-title">If It Goes Wrong</div><div class="result-text">${recipe.troubleshoot}</div></div>` : ''}
+        </div>
+      </div>
+      <div class="save-row">
+        <button class="save-btn" onclick="saveBrew()">+ Save Brew</button>
+        <button class="save-btn" id="fav-btn" onclick="toggleFav()">☆ Favourite</button>
+      </div>
+      <div class="notes-area">
+        <textarea id="brew-notes" placeholder="Add tasting notes after you've brewed...">${recipe._notes || ''}</textarea>
+        <button class="notes-submit" onclick="saveNotes()">Save notes</button>
+      </div>`;
+
+    if (recipe._isFav) {
+      const btn = document.getElementById('fav-btn');
+      if (btn) { btn.textContent = '★ Favourited'; btn.classList.add('fav'); }
+    }
+  }
+
+  function saveBrew() {
+    if (!lastResult) return;
+    lastResult._notes = document.getElementById('brew-notes')?.value || '';
+    const i = brewHistory.findIndex(b => b._timestamp === lastResult._timestamp);
+    if (i === -1) brewHistory.unshift({...lastResult});
+    else brewHistory[i] = {...lastResult};
+    saveHistory();
+    const btn = document.querySelector('.save-btn');
+    if (btn) { btn.textContent = 'Saved ✓'; setTimeout(() => btn.textContent = '+ Save Brew', 1500); }
+  }
+
+  function toggleFav() {
+    if (!lastResult) return;
+    lastResult._isFav = !lastResult._isFav;
+    const btn = document.getElementById('fav-btn');
+    if (btn) { btn.textContent = lastResult._isFav ? '★ Favourited' : '☆ Favourite'; btn.classList.toggle('fav', lastResult._isFav); }
+    const i = brewHistory.findIndex(b => b._timestamp === lastResult._timestamp);
+    if (i !== -1) { brewHistory[i]._isFav = lastResult._isFav; saveHistory(); }
+  }
+
+  function saveNotes() {
+    if (!lastResult) return;
+    lastResult._notes = document.getElementById('brew-notes')?.value || '';
+    const i = brewHistory.findIndex(b => b._timestamp === lastResult._timestamp);
+    if (i !== -1) { brewHistory[i]._notes = lastResult._notes; saveHistory(); }
+    const btn = document.querySelector('.notes-submit');
+    if (btn) { btn.textContent = 'Saved ✓'; setTimeout(() => btn.textContent = 'Save notes', 1500); }
+  }
+
+  function renderHistory() {
+    const el = document.getElementById('history-list');
+    if (!brewHistory.length) { el.innerHTML = '<div class="empty-state">No brews yet. Dial one in.</div>'; return; }
+    el.innerHTML = brewHistory.map((b,i) => `
+      <div class="history-item${b._isFav ? ' fav-item' : ''}" onclick="loadBrew(${i})">
+        <div style="min-width:0;flex:1">
+          <div class="history-name">${b.recipeName || 'Unnamed Brew'}</div>
+          <div class="history-meta">${b._method}${b._inputs?.roaster ? ' · '+b._inputs.roaster : ''} · ${new Date(b._timestamp).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</div>
+          ${b._notes ? `<div style="font-size:11px;color:var(--text3);margin-top:3px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b._notes.substring(0,40)}${b._notes.length>40?'…':''}</div>` : ''}
+        </div>
+        <span class="history-badge">${b._inputs?.origin || b._method}</span>
+      </div>`).join('');
+  }
+
+  function renderFavourites() {
+    const favs = brewHistory.filter(b => b._isFav);
+    const el = document.getElementById('fav-list');
+    if (!favs.length) { el.innerHTML = '<div class="empty-state">No favourites saved yet.</div>'; return; }
+    el.innerHTML = favs.map(b => `
+      <div class="history-item fav-item" onclick="loadBrew(${brewHistory.indexOf(b)})">
+        <div>
+          <div class="history-name">${b.recipeName || 'Unnamed Brew'}</div>
+          <div class="history-meta">${b._method}${b._inputs?.roaster ? ' · '+b._inputs.roaster : ''} · ${b._inputs?.origin || 'Unknown origin'}</div>
+        </div>
+        <span style="color:var(--amber);font-size:18px;margin-left:8px">★</span>
+      </div>`).join('');
+  }
+
+  function loadBrew(i) {
+    lastResult = {...brewHistory[i]};
+    showTab('brew');
+    renderResult(lastResult);
+    window.scrollTo(0, 0);
+  }
+
+  function showError(msg) { document.getElementById('error-container').innerHTML = `<div class="error-msg">${msg}</div>`; }
+  function clearError() { document.getElementById('error-container').innerHTML = ''; }
+
+  document.getElementById('roastDate').valueAsDate = new Date();
+</script>
+</body>
+</html>
